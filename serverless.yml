@@ -1,0 +1,64 @@
+service: streaming-live-chat
+
+provider:
+ name: aws
+ runtime: nodejs12.x
+ memorySize: 512
+ timeout: 10
+ region: us-east-2
+ websocketApiRouteSelectionExpression: $request.body.action
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  dynamodb:
+    start:
+      port: 8000
+      sharedDb: true
+      migrate: true
+    stages:
+      - dev 
+    migration:
+      dir: offline/migrations
+
+functions:
+  default:
+    handler: LambdaEntry.handleMessage
+    events:
+      - websocket: $default
+
+#resources:
+#  Resources:
+#    stagingConnections:
+#      Type: AWS::DynamoDB::Table
+#      Properties:
+#        TableName: staging-sl-connections
+#        AttributeDefinitions:
+#          - AttributeName: room
+#            AttributeType: S
+#          - AttributeName: connectionId
+#            AttributeType: S
+#        KeySchema:
+#          - AttributeName: room
+#            KeyType: HASH
+#          - AttributeName: connectionId
+#            KeyType: RANGE
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 1
+#          WriteCapacityUnits: 1
+#    stagingCatchup:
+#      Type: AWS::DynamoDB::Table
+#      Properties:
+#        TableName: staging-sl-catchup
+#        AttributeDefinitions:
+#          - AttributeName: room
+#            AttributeType: S
+#        KeySchema:
+#          - AttributeName: room
+#            KeyType: HASH
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 1
+#          WriteCapacityUnits: 1
+  
