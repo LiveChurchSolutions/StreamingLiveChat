@@ -11,6 +11,6 @@ RUN git submodule init && git submodule update
 
 RUN npm install
 
-CMD npm run deploy-prod
+CMD npm run $ENVIRONMENT
 
 EXPOSE 8201
