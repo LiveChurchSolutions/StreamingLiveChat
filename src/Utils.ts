@@ -8,8 +8,8 @@ export class Utils {
     }
 
     public static isHost = (token: string, room: string) => {
-        const churchId = parseInt((room.replace("church_", "").split("_")[0]), 0);
-        if (churchId === 0) return false;
+        const churchId = (room.replace("church_", "").split("_")[0]);
+        if (churchId === "") return false;
         else {
             const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY);
             const authChurchId = decoded.churchId;
